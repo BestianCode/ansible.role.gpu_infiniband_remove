@@ -2,6 +2,27 @@
 
 This Ansible role provides comprehensive cleanup of InfiniBand/MLNX OFED packages and their dependencies from Ubuntu systems.
 
+## Installation
+
+Install from Ansible Galaxy (preferred):
+
+```bash
+ansible-galaxy role install bestiancode.gpu_infiniband_remove
+```
+
+Or install directly from GitHub:
+
+```bash
+ansible-galaxy role install git+https://github.com/BestianCode/ansible.role.gpu_infiniband_remove.git
+```
+
+Sample `requirements.yml` entry:
+
+```yaml
+roles:
+  - name: bestiancode.gpu_infiniband_remove
+```
+
 ## Features
 
 - **Intelligent package detection**: Automatically identifies installed InfiniBand/MLNX packages
@@ -21,18 +42,6 @@ This role removes:
 - **Development packages**: Headers and development libraries for IB/RDMA
 - **RDMA core components**: Core RDMA infrastructure and libraries
 
-**Note**: The role uses a two-stage approach:
-
-1. First, it identifies and removes specific installed packages
-2. Then, it applies wildcard patterns to catch any remaining packages
-
-## How it works
-
-1. **Discovery phase**: Scans installed packages using `dpkg -l` to find InfiniBand-related packages
-2. **Targeted removal**: Uses Ansible's apt module to safely remove identified packages
-3. **Wildcard cleanup**: Applies wildcard patterns to catch any remaining packages
-4. **Cleanup**: Runs autoremove to clean up orphaned dependencies
-
 ## Role Variables
 
 - `infiniband_cleanup_enabled`: Whether to perform InfiniBand/MLNX OFED cleanup (default: `false`)
@@ -42,13 +51,16 @@ This role removes:
 - `infiniband_cleanup_autoremove`: Whether to run autoremove after package cleanup (default: `true`)
 - `infiniband_cleanup_debug`: Whether to display debug information (default: `true`)
 
-## Example Playbook
+## Usage
+
+Minimal playbook example:
 
 ```yaml
-- hosts: gpu_nodes
-  become: yes
+- hosts:
+    - gpu_nodes
+  become: true
   roles:
-    - role: infiniband_cleanup
+    - role: bestiancode.gpu_infiniband_remove
       vars:
         infiniband_cleanup_enabled: true
 ```
