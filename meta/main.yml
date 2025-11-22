@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: Oleg Smirnov
+  description: Remove (purge) InfiniBand/MLNX OFED packages and their dependencies
+  license: BSD-2-Clause
+  min_ansible_version: "2.9"
+  platforms:
+    - name: Ubuntu
+      versions:
+        - all
+  galaxy_tags:
+    - infiniband
+    - mlnx
+    - ofed
+    - cleanup
+    - networking
+
+dependencies: []

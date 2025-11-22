@@ -1,0 +1,46 @@
+---
+# Defaults for infiniband_cleanup role
+
+# Whether to perform InfiniBand/MLNX OFED cleanup
+infiniband_cleanup_enabled: false
+
+# InfiniBand/MLNX OFED packages to purge
+infiniband_cleanup_packages:
+  # Specific KNEM packages
+  - knem-dkms
+  - knem
+
+  # MLNX OFED kernel and core packages
+  - mlnx-ofed-kernel-dkms
+  - mlnx-ofed-kernel-utils
+  - mlnx-ethtool
+  - mlnx-fw-updater
+  - mlnx-iproute2
+  - mlnx-tools
+  - ofed-scripts
+
+  # OpenSM packages
+  - opensm-doc
+
+  # Wildcard patterns to catch remaining packages
+  - 'mlnx-ofed-*'
+  - 'mlnx-*'
+  - 'opensm*'
+
+# Whether to run autoremove after package cleanup
+infiniband_cleanup_autoremove: true
+
+# Whether to display debug information
+infiniband_cleanup_debug: true
+
+# Search patterns for finding InfiniBand packages
+infiniband_cleanup_search_patterns:
+  - mlnx
+  - opensm
+  - knem
+  - ofed
+
+# Wildcard patterns for additional cleanup
+infiniband_cleanup_wildcard_patterns:
+  - 'mlnx-*'
+  - 'opensm*'

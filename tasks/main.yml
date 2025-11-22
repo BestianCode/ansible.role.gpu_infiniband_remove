@@ -1,0 +1,45 @@
+---
+# Role: infiniband_cleanup
+# Clean up InfiniBand/MLNX OFED packages and dependencies
+
+- name: Purge InfiniBand/MLNX OFED packages
+  when: infiniband_cleanup_enabled | default(false)
+  become: true
+  block:
+    - name: Get list of installed InfiniBand packages
+      ansible.builtin.shell: |
+        dpkg -l | grep -E "^ii" | awk '{print $2}' | grep -E "({{ infiniband_cleanup_search_patterns | join('|') }})" || true
+      register: installed_ib_packages
+      changed_when: false
+
+    - name: Remove InfiniBand/MLNX OFED packages (only installed ones)
+      ansible.builtin.apt:
+        name: "{{ installed_ib_packages.stdout_lines }}"
+        state: absent
+        purge: true
+      register: infiniband_purge_result
+      when: installed_ib_packages.stdout_lines | length > 0
+
+    - name: Remove remaining packages using apt remove with wildcards
+      ansible.builtin.shell: |
+        {% for pattern in infiniband_cleanup_wildcard_patterns %}
+        apt remove --purge -y "{{ pattern }}" 2>/dev/null || true
+        {% endfor %}
+      register: wildcard_cleanup_result
+      changed_when: false
+
+    - name: Auto-remove orphaned packages after InfiniBand purge
+      ansible.builtin.apt:
+        autoremove: true
+        purge: true
+      register: infiniband_autoremove
+      when: infiniband_cleanup_autoremove | default(true)
+
+    - name: Debug InfiniBand cleanup results
+      ansible.builtin.debug:
+        msg:
+          - "Found installed IB packages: {{ installed_ib_packages.stdout_lines | length }}"
+          - "Package list: {{ installed_ib_packages.stdout_lines }}"
+          - "Packages purge: {{ 'changed' if (infiniband_purge_result is defined and infiniband_purge_result.changed) else 'no change' }}"
+          - "Autoremove: {{ 'changed' if (infiniband_autoremove is defined and infiniband_autoremove.changed) else 'no change' }}"
+      when: infiniband_cleanup_debug | default(true)
