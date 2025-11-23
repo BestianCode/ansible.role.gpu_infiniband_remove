@@ -1,5 +1,7 @@
 ---
 galaxy_info:
+  role_name: gpu_infiniband_remove
+  namespace: bestiancode
   author: Oleg Smirnov
   description: Remove (purge) InfiniBand/MLNX OFED packages and their dependencies
   license: BSD-2-Clause
